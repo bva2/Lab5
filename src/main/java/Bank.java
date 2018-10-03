@@ -8,12 +8,21 @@
  * @see <a href="https://cs125.cs.illinois.edu/lab/5/">Lab 5 Description</a>
  */
 public class Bank {
-
-    public String bankName;
-
-    public Bank() {
+    /**
+     * Name of bank company hosting account.
+     */
+    private String bankName;
+    /**
+     * Total number of active accounts belonging to this bank.
+     */
+    private static int totalAccounts = 0;
+    /**
+     * Constructor to default the bank name to Illini Bank.
+     */
+    Bank() {
         bankName = "Illini Bank";
     }
+
 
     /**
      * Withdraw money from an account.
@@ -25,10 +34,15 @@ public class Bank {
      * @param amount to withdraw (double)
      * @return boolean
      */
-    public boolean withdrawMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+    public static boolean withdrawMoney(final BankAccount bankAccount, final double amount) {
+        if (bankAccount.getBalance() < amount) {
+            return false;
+        } else {
+            double newamount = bankAccount.getBalance() - amount;
+            bankAccount.setAccountBalance(newamount);
+            System.out.println("[Withdrawal]: New amount is: " + bankAccount.getBalance());
+        }
+        return true;
     }
 
     /**
@@ -42,9 +56,14 @@ public class Bank {
      * @return boolean
      */
     public boolean depositMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+        if (amount <= 0) {
+            return false;
+        } else {
+            double newamount = bankAccount.getBalance() + amount;
+            bankAccount.setAccountBalance(newamount);
+            System.out.println("[Deposit]: New amount is: " + bankAccount.getBalance());
+        }
+        return true;
     }
 
     /**
@@ -61,9 +80,18 @@ public class Bank {
 
     public boolean transferMoney(final BankAccount source, final BankAccount destination,
             final double amount) {
-        /*
-         * Implement this function
-         */
+        if (source.getBalance() < amount) {
+            return false;
+        } else {
+            System.out.println("Transferring funds...");
+            double newamount1 = source.getBalance() - amount;
+            double newamount2 = destination.getBalance() + amount;
+            destination.setAccountBalance(newamount2);
+            System.out.println("[Transfer]: Destination now has " + destination.getBalance());
+            source.setAccountBalance(newamount1);
+            System.out.println("[Transfer]: Source now has " + source.getBalance());
+        }
+        return true;
     }
 
     /**
@@ -72,23 +100,26 @@ public class Bank {
      * @param bankAccount to change
      * @param name new name to set
      */
-
     public void changeOwnerName(final BankAccount bankAccount, final String name) {
-        /*
-         * Implement this function
-         */
+        bankAccount.setOwnerName(name);
     }
 
-    public static int totalAccounts = 0;
+
     /**
      * Uses static variable to get number of bank accounts opened.
      *
      * @return the total number of accounts
      */
     public static int getNumberOfAccount() {
-        /*
-         * Implement this function
-         */
+        return totalAccounts;
+    }
+
+    /**
+     * Change the number of active bank accounts.
+     * @param change how much it increases by
+     */
+    public static void setTotalAccounts(final int change) {
+        Bank.totalAccounts = totalAccounts + change;
     }
 
     /**
@@ -121,6 +152,6 @@ public class Bank {
 
         // Print number of accounts
         System.out.print("Number of active accounts at " + bank.bankName + " are ");
-        System.out.println(Bank.totalAccounts);
+        System.out.println(Bank.getNumberOfAccount());
     }
 }
